@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [weather, setWeather] = useState(null);
+  useEffect(() => {
+    async function fetchWeather() {
+      const CITY_NAME = "Addis ababa";
+      const API_KEY = import.meta.env.VITE_API_KEY; // access the key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY_NAME}&appid=${API_KEY}&units=metric`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        setWeather(data);
+      } catch (error) {
+        console.error("Error fetching weather", error);
+      }
+    }
+    fetchWeather();
+  }, []);
+
+  // if we have no data yet
+  if (!weather) return <h1>Loading...</h1>;
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h2>the city name {weather.name}</h2>
+      <p>Temperatur: {weather.main.temp}°C</p>
+      <p>Condition: {weather.weather[0].description}</p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
