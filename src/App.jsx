@@ -17,8 +17,8 @@ function App() {
       const res = await fetch(url);
       const data = await res.json();
       
-      // OPTIONAL: Check if city exists (API returns 404 if not found)
-      if (data.cod === "404") {
+      //use != 200 to catch any error (404, 401, etc)
+      if (data.cod != 200) {
         alert("City not found!");
         return;
       }
@@ -30,9 +30,13 @@ function App() {
   }
 
   if (!weather) return <h1>Loading...</h1>;
+  
+  // Construct URL for the icon 
+  const iconUrl = `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
 
   return (
     <>
+      <h1>My Weather App</h1>
       <label htmlFor="city-name">City: </label>
       <input
         type="text"
@@ -45,10 +49,11 @@ function App() {
         Search
       </button>
 
-      <div>
-        <h2>City: {weather.name}</h2>
-        <p>Temperature: {weather.main.temp}°C</p>
-        <p>Condition: {weather.weather[0].description}</p>
+      <div className="weather-card">
+        <h2>{weather.name}</h2>
+        <img src={iconUrl} alt={weather.weather[0].description} />
+        <p className="temp">{weather.main.temp}°C</p>
+        <p className="desc">{weather.weather[0].description}</p>
       </div>
     </>
   );
