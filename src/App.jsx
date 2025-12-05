@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import SearchBar from "./assets/components/SearchBar";
+import WeatherCard from "./assets/components/WeatherCard";
 
 function App() {
   const [weather, setWeather] = useState(null);
-  const [cityInput, setCityInput] = useState(""); 
 
   useEffect(() => {
     fetchWeather("Addis Ababa");
@@ -31,30 +32,12 @@ function App() {
 
   if (!weather) return <h1>Loading...</h1>;
   
-  // Construct URL for the icon 
-  const iconUrl = `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
 
   return (
     <>
       <h1>My Weather App</h1>
-      <label htmlFor="city-name">City: </label>
-      <input
-        type="text"
-        id="city-name"
-        placeholder="enter city name"
-        value={cityInput}
-        onChange={(e) => setCityInput(e.target.value)} 
-      />
-      <button style={{marginLeft: "10px"}} onClick={() => fetchWeather(cityInput)}>
-        Search
-      </button>
-
-      <div className="weather-card">
-        <h2>{weather.name}</h2>
-        <img src={iconUrl} alt={weather.weather[0].description} />
-        <p className="temp">{weather.main.temp}°C</p>
-        <p className="desc">{weather.weather[0].description}</p>
-      </div>
+      <SearchBar onSearch={fetchWeather}></SearchBar>
+      <WeatherCard weather={weather}></WeatherCard>
     </>
   );
 }
